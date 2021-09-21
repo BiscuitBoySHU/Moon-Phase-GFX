@@ -12,14 +12,7 @@ namespace MoonPhaseSpace
 
         private Arc ArcA;
         private Arc ArcB;
-        private readonly int RightAngleStart = -90;
-        private readonly int LeftAngleStart = 90;
-        private readonly int AngleEnd = 180;
         private readonly int MaxWidth = 300;
-        private readonly int DistanceFromTop = 80;
-        private readonly int ChangeRate = 3;
-        private readonly Rectangle RightArcStart;
-        private readonly Rectangle LeftArcStart;
 
 
         public MoonPhase()
@@ -27,10 +20,8 @@ namespace MoonPhaseSpace
             InitializeComponent();
 
             Pen = new Pen(Brushes.Yellow);
-            RightArcStart = new Rectangle(100, DistanceFromTop, MaxWidth, MaxWidth);
-            LeftArcStart = new Rectangle(250, DistanceFromTop, 0, MaxWidth);
-            ArcA = new Arc(RightArcStart, RightAngleStart, AngleEnd);
-            ArcB = new Arc(RightArcStart, RightAngleStart, AngleEnd);
+            ArcA = new Arc(maxWidth: MaxWidth);
+            ArcB = new Arc(maxWidth: MaxWidth);
 
             Text = "Moon Phase";
             MaximizeBox = false;
@@ -38,7 +29,7 @@ namespace MoonPhaseSpace
 
             const int formSize = 520;
             Size = new Size(formSize, formSize);
-            pictureBox1.SetBounds(0, 0, Size.Width, Size.Height);
+            ImageBox.SetBounds(0, 0, Size.Width, Size.Height);
 
             Canvas = new Bitmap(Size.Width, Size.Height);
             Graphics = Graphics.FromImage(Canvas);
@@ -47,47 +38,15 @@ namespace MoonPhaseSpace
         private void Updater_Tick(object sender, EventArgs e)
         {
             Graphics.Clear(Color.Black);
-            Graphics.DrawEllipse(new Pen(Brushes.DarkGray), new RectangleF(100, DistanceFromTop, MaxWidth, MaxWidth));
+            Graphics.DrawEllipse(new Pen(Brushes.DarkGray), new RectangleF(100, 80, MaxWidth, MaxWidth));
 
-            HandleArc(ArcA);
-            if (ArcA.IsComplete)
-                HandleArc(ArcB);
-
+            ArcA.Update(halfway: false, decimalPercentage: 0.25d);
+            ArcB.Update(halfway: true, decimalPercentage: 0.25d);
+            
             ArcA.Draw(Graphics, Pen);
             ArcB.Draw(Graphics, Pen);
 
-            pictureBox1.Image = Canvas;
-
-            if (ArcA.IsComplete && ArcB.IsComplete)
-            {
-                ResetArc(ArcA);
-                ResetArc(ArcB);
-            }
-
-
-            void HandleArc(Arc arc)
-            {
-                if (!arc.IsComplete)
-                    arc.Update(increase: arc.IsHalfway, quantity: ChangeRate);
-
-                if (arc.Bounds.Width <= 0)
-                {
-                    Graphics.DrawLine(Pen, 250, DistanceFromTop, 250, MaxWidth + 80);
-                    arc.IsHalfway = true;
-                    arc.Bounds = LeftArcStart;
-                    arc.StartAngle = LeftAngleStart;
-                }
-                else if (arc.Bounds.Width >= MaxWidth)
-                    arc.IsComplete = true;
-            }
-
-            void ResetArc(Arc arc)
-            {
-                arc.Bounds = RightArcStart;
-                arc.StartAngle = RightAngleStart;
-                arc.IsComplete = false;
-                arc.IsHalfway = false;
-            }
+            ImageBox.Image = Canvas;
         }
 
         private void MoonPhase_FormClosing(object sender, FormClosingEventArgs e)
