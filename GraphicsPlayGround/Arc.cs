@@ -28,7 +28,7 @@ namespace MoonPhaseSpace
         public void Update(bool halfway, double decimalPercentage)
         {
             if (decimalPercentage >= .5d) decimalPercentage = .4999d;
-            var newWidth = (int)(Math.Floor(MaxWidth * decimalPercentage));
+            var newWidth = (int)(MaxWidth * decimalPercentage);
 
             if (halfway)
             {
