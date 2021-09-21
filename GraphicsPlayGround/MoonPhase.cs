@@ -22,14 +22,14 @@ namespace MoonPhaseSpace
         {
             InitializeComponent();
 
-            Pen = new Pen(Brushes.Yellow);
+            Pen = new Pen(Brushes.Yellow, 2f);
             TextFont = new Font(SystemFonts.DefaultFont.FontFamily, 12, FontStyle.Regular);
-            ArcA = new Arc(maxWidth: MaxWidth);
-            ArcB = new Arc(maxWidth: MaxWidth);
+            ArcA = new Arc();
+            ArcB = new Arc();
 
             Text = "Moon Phase";
             MaximizeBox = false;
-            FormBorderStyle = FormBorderStyle.FixedSingle;
+            FormBorderStyle = FormBorderStyle.FixedDialog;
 
             const int formSize = 520;
             Size = new Size(formSize, formSize);
@@ -42,11 +42,13 @@ namespace MoonPhaseSpace
             NewMoonReferenceTime = new DateTime(year: 2021, month: 1, day: 13, hour: 5, minute: 0, second: 0); // Time of new moon phase, Jan, 2021.
         }
 
+
         private void Updater_Tick(object sender, EventArgs e)
         {
             const double phaseQuarter = 0.25d;
             Graphics.Clear(Color.Black);
-            Graphics.DrawEllipse(new Pen(Brushes.DarkGray), new RectangleF(100, 80, MaxWidth, MaxWidth));
+            Graphics.DrawImage(Properties.Resources.Moon, new RectangleF(100, 80, MaxWidth + 4, MaxWidth));
+            Graphics.DrawEllipse(new Pen(Brushes.DarkGray), new RectangleF(100, 82, MaxWidth, MaxWidth - 4));
 
             double moonAgePercentage = CalculateMoonAgePercentage();
             bool reachedFirstQuarter = moonAgePercentage >= phaseQuarter;
@@ -86,7 +88,7 @@ namespace MoonPhaseSpace
             else
                 phase = "New Moon";
 
-            Graphics.DrawString($"Phase: {phase}\n{DateTime.UtcNow} (UTC)", TextFont, Brushes.White, 10f, 10f);
+            Graphics.DrawString($"Phase: {phase}\n{DateTime.UtcNow} (UTC)\nAge: {moonAgePercentage * 100}%", TextFont, Brushes.White, 10f, 10f);
             ImageBox.Image = Canvas;
         }
 

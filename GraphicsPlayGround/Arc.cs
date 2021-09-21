@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace MoonPhaseSpace
 {
@@ -16,19 +15,14 @@ namespace MoonPhaseSpace
 
         public int StartAngle { get; private set; }
         public int EndAngle { get; } = 180;
-        public int MaxWidth { get; }
 
 
-        public Arc(int maxWidth)
-        {
-            MaxWidth = maxWidth;
-            Update(halfway: false, decimalPercentage: 0.0d);
-        }
+        public Arc() => Update(halfway: false, decimalPercentage: 0.0d);
 
         public void Update(bool halfway, double decimalPercentage)
         {
             if (decimalPercentage >= .5d) decimalPercentage = .4999d;
-            var newWidth = (int)(MaxWidth * decimalPercentage);
+            var newWidth = (int)(MoonPhase.MaxWidth * decimalPercentage);
 
             if (halfway)
             {
